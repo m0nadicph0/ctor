@@ -3,6 +3,7 @@ package model
 import (
 	"bytes"
 	"fmt"
+	"github.com/m0nadicph0/ctor/internal/builtins"
 	"html/template"
 )
 
@@ -15,7 +16,7 @@ type Task struct {
 func (t *Task) GetExpandedCommands(variables map[string]string) ([]string, error) {
 	expandedCommands := make([]string, 0)
 	for _, command := range t.Commands {
-		tmpl, err := template.New("").Parse(command)
+		tmpl, err := template.New("").Funcs(template.FuncMap(builtins.BuiltinFunctions)).Parse(command)
 		if err != nil {
 			return []string{}, fmt.Errorf("failed to parse command [%s]:%v", command, err)
 		}

@@ -6,13 +6,6 @@ import (
 	"io"
 )
 
-//func PrintTaskNames(out io.Writer, tasks []*model.Task) {
-//	fmt.Fprintln(out, "ctor: Available tasks for this project:")
-//	for _, task := range tasks {
-//		fmt.Fprintf(out, "- %s\n", task.Name)
-//	}
-//}
-
 func PrintTasks(out io.Writer, tasks []*model.Task) {
 	fmt.Fprintln(out, "ctor: Available tasks for this project:")
 	for _, task := range tasks {
