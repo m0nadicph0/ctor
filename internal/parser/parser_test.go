@@ -110,3 +110,53 @@ func TestParseTaskDefs(t *testing.T) {
 		})
 	}
 }
+
+const TestYamlVars = `
+version: '1'
+
+vars:
+  GREETING: Hello from Taskfile!
+  BUILD_NO: 011
+  TAG: 0a34ff
+
+tasks:
+  default:
+    cmds:
+      - echo "{{.GREETING}}"
+`
+
+func TestParseTaskDefsVars(t *testing.T) {
+	data := bytes.NewBuffer([]byte(TestYamlVars))
+	taskDefs, err := ParseTaskDefs(data)
+
+	if err != nil {
+		t.Fatalf("didn't expect error while parsing yaml, but got %v", err)
+	}
+
+	expectedVarsCount := 3
+	if len(taskDefs.Variables) != expectedVarsCount {
+		t.Errorf("wanted variable count=%d, but got=%d", expectedVarsCount, len(taskDefs.Variables))
+	}
+
+	expectedVars := []string{"GREETING", "BUILD_NO", "TAG"}
+	expectedVals := map[string]string{
+		"GREETING": "Hello from Taskfile!",
+		"BUILD_NO": "011",
+		"TAG":      "0a34ff",
+	}
+
+	for _, expectedVar := range expectedVars {
+		value, ok := taskDefs.Variables[expectedVar]
+
+		if !ok {
+			t.Errorf("expected to find variable %s, but got=%t", expectedVar, ok)
+		}
+
+		expectedValue := expectedVals[expectedVar]
+
+		if expectedValue != value {
+			t.Errorf("expected to variable %s to have value=%s, but got=%s", expectedVar, expectedValue, value)
+		}
+	}
+
+}

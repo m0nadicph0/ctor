@@ -1,8 +1,9 @@
 package model
 
 type TaskDefs struct {
-	Version string           `yaml:"version"`
-	Tasks   map[string]*Task `yaml:"tasks"`
+	Version   string            `yaml:"version"`
+	Variables map[string]string `yaml:"vars"`
+	Tasks     map[string]*Task  `yaml:"tasks"`
 }
 
 func (td *TaskDefs) Find(name string) (*Task, bool) {
