@@ -23,7 +23,7 @@ func (e Engine) Start(args []string) error {
 	for _, arg := range args {
 		task, ok := e.taskDefs.Find(arg)
 		if !ok {
-			util.ErrExit(1, "task \"%s\" not found\n", arg)
+			util.ErrExitF(1, "task \"%s\" not found\n", arg)
 		}
 
 		err := e.executor.Exec(task.Commands)

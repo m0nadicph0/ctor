@@ -4,6 +4,7 @@ import (
 	engine "github.com/m0nadicph0/ctor/internal/engine"
 	"github.com/m0nadicph0/ctor/internal/executor"
 	"github.com/m0nadicph0/ctor/internal/parser"
+	"github.com/m0nadicph0/ctor/internal/util"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -30,6 +31,24 @@ build requirements.`,
 			return err
 		}
 
+		listAll, _ := cmd.Flags().GetBool("list-all")
+
+		if listAll {
+			util.PrintTaskNames(os.Stdout, taskDefs.GetTasks())
+			os.Exit(0)
+		}
+
+		list, _ := cmd.Flags().GetBool("list")
+
+		if list {
+			withDesc := taskDefs.GetTasksWithDesc()
+			if util.IsEmpty(withDesc) {
+				util.WarnExit("ctor: No tasks with description available. Try --list-all to list all tasks\n")
+			}
+			util.PrintTasks(os.Stdout, withDesc)
+			os.Exit(0)
+		}
+
 		eng := engine.NewEngine(executor.NewExecutor(), taskDefs)
 
 		return eng.Start(args)
@@ -47,5 +66,7 @@ func init() {
 	rootCmd.Flags().StringP("ctorfile", "c", "Ctorfile.yaml", "choose which Ctorfile to run")
 	rootCmd.Flags().BoolP("verbose", "v", false, "enables verbose mode")
 	rootCmd.Flags().BoolP("help", "h", false, "shows usage message")
+	rootCmd.Flags().BoolP("list", "l", false, "lists tasks with description of current Ctorfile")
+	rootCmd.Flags().BoolP("list-all", "a", false, "lists tasks with or without a description")
 
 }
