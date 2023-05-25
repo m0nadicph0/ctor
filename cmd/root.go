@@ -34,7 +34,7 @@ build requirements.`,
 		listAll, _ := cmd.Flags().GetBool("list-all")
 
 		if listAll {
-			util.PrintTaskNames(os.Stdout, taskDefs.GetTasks())
+			util.PrintTasks(os.Stdout, taskDefs.GetTasks())
 			os.Exit(0)
 		}
 
