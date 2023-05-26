@@ -28,3 +28,14 @@ func (td *TaskDefs) GetTasksWithDesc() []*Task {
 	}
 	return tasks
 }
+
+func (td TaskDefs) GetDependencies(task *Task) []*Task {
+	dependencies := make([]*Task, 0)
+	for _, dep := range task.Dependencies {
+		dt, ok := td.Find(dep)
+		if ok {
+			dependencies = append(dependencies, dt)
+		}
+	}
+	return dependencies
+}

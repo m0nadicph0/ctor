@@ -9,10 +9,11 @@ import (
 )
 
 type Task struct {
-	Name        string            `yaml:"-"`
-	Commands    []string          `yaml:"cmds"`
-	Description string            `yaml:"desc"`
-	Variables   map[string]string `yaml:"vars"`
+	Name         string            `yaml:"-"`
+	Commands     []string          `yaml:"cmds"`
+	Description  string            `yaml:"desc"`
+	Variables    map[string]string `yaml:"vars"`
+	Dependencies []string          `yaml:"deps"`
 }
 
 func (t *Task) GetExpandedCommands(variables map[string]string) ([]string, error) {
@@ -31,6 +32,10 @@ func (t *Task) GetExpandedCommands(variables map[string]string) ([]string, error
 
 func (t *Task) String() string {
 	return fmt.Sprintf("- %s:\t %s", t.Name, t.Description)
+}
+
+func (t Task) HasDependency() bool {
+	return len(t.Dependencies) != 0
 }
 
 func PrintTasks(out io.Writer, tasks []*Task) {
