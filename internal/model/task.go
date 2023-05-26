@@ -3,9 +3,11 @@ package model
 import (
 	"bytes"
 	"fmt"
+	"github.com/logrusorgru/aurora/v4"
 	"github.com/m0nadicph0/ctor/internal/builtins"
 	"html/template"
 	"io"
+	"strings"
 )
 
 type Task struct {
@@ -51,6 +53,13 @@ func (t *Task) HasAlias(alias string) bool {
 func PrintTasks(out io.Writer, tasks []*Task) {
 	fmt.Fprintln(out, "ctor: Available tasks for this project:")
 	for _, task := range tasks {
-		fmt.Fprintf(out, "- %s:\t %s\n", task.Name, task.Description)
+		fmt.Fprintf(out, "%s %s:\t%s\t%s\n", aurora.Yellow("*"), aurora.Green(task.Name), task.Description, aurora.Cyan(getAliasStr(task)))
 	}
+}
+
+func getAliasStr(task *Task) string {
+	if len(task.Aliases) == 0 {
+		return ""
+	}
+	return fmt.Sprintf("(aliases: %s)", strings.Join(task.Aliases, ","))
 }
