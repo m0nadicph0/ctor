@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/logrusorgru/aurora/v4"
 	"github.com/m0nadicph0/ctor/internal/builtins"
+	"github.com/olekukonko/tablewriter"
 	"html/template"
 	"io"
 	"strings"
@@ -50,16 +51,30 @@ func (t *Task) HasAlias(alias string) bool {
 	return false
 }
 
+//func PrintTasks(out io.Writer, tasks []*Task) {
+//	fmt.Fprintln(out, "ctor: Available tasks for this project:")
+//	for _, task := range tasks {
+//		fmt.Fprintf(out, "%s %s:\t%s\t%s\n", aurora.Yellow("*"), aurora.Green(task.Name), task.Description, aurora.Cyan(getAliasStr(task)))
+//	}
+//}
+
 func PrintTasks(out io.Writer, tasks []*Task) {
 	fmt.Fprintln(out, "ctor: Available tasks for this project:")
+	table := tablewriter.NewWriter(out)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetHeaderLine(false)
+	table.SetAutoWrapText(false)
 	for _, task := range tasks {
-		fmt.Fprintf(out, "%s %s:\t%s\t%s\n", aurora.Yellow("*"), aurora.Green(task.Name), task.Description, aurora.Cyan(getAliasStr(task)))
+		table.Append([]string{aurora.Yellow("-").String(), aurora.Green(task.Name).String(), task.Description, aurora.Cyan(getAliasStr(task)).String()})
 	}
+	table.Render()
 }
 
 func getAliasStr(task *Task) string {
 	if len(task.Aliases) == 0 {
 		return ""
 	}
-	return fmt.Sprintf("(aliases: %s)", strings.Join(task.Aliases, ","))
+	return fmt.Sprintf("[aliases: %s]", strings.Join(task.Aliases, ", "))
 }
