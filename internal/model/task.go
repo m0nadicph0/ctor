@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/m0nadicph0/ctor/internal/builtins"
 	"html/template"
+	"io"
 )
 
 type Task struct {
@@ -26,4 +27,15 @@ func (t *Task) GetExpandedCommands(variables map[string]string) ([]string, error
 		expandedCommands = append(expandedCommands, buf.String())
 	}
 	return expandedCommands, nil
+}
+
+func (t *Task) String() string {
+	return fmt.Sprintf("- %s:\t %s", t.Name, t.Description)
+}
+
+func PrintTasks(out io.Writer, tasks []*Task) {
+	fmt.Fprintln(out, "ctor: Available tasks for this project:")
+	for _, task := range tasks {
+		fmt.Fprintf(out, "- %s:\t %s\n", task.Name, task.Description)
+	}
 }

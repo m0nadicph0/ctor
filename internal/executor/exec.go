@@ -1,29 +1,40 @@
 package executor
 
 import (
+	"github.com/m0nadicph0/ctor/internal/model"
+	"github.com/m0nadicph0/ctor/internal/util"
 	"io"
 	"os"
 	"os/exec"
 )
 
 type Executor interface {
-	Exec(commands []string) error
+	Exec(task *model.Task) error
 }
 
 type executor struct {
-	Stdout io.Writer
-	Stderr io.Writer
+	Stdout   io.Writer
+	Stderr   io.Writer
+	TaskDefs *model.TaskDefs
 }
 
-func NewExecutor() Executor {
+func NewExecutor(taskDefs *model.TaskDefs) Executor {
 	return &executor{
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
+		Stdout:   os.Stdout,
+		Stderr:   os.Stderr,
+		TaskDefs: taskDefs,
 	}
 }
 
-func (e *executor) Exec(commands []string) error {
-	for _, cmd := range commands {
+func (e *executor) Exec(task *model.Task) error {
+	mergedVars := util.MergeVars(e.TaskDefs.Variables, task.Variables)
+	expandedCmd, err := task.GetExpandedCommands(mergedVars)
+
+	if err != nil {
+		return err
+	}
+
+	for _, cmd := range expandedCmd {
 		err := e.execCmd(cmd)
 		if err != nil {
 			return err

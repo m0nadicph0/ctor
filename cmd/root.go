@@ -3,6 +3,7 @@ package cmd
 import (
 	engine "github.com/m0nadicph0/ctor/internal/engine"
 	"github.com/m0nadicph0/ctor/internal/executor"
+	"github.com/m0nadicph0/ctor/internal/model"
 	"github.com/m0nadicph0/ctor/internal/parser"
 	"github.com/m0nadicph0/ctor/internal/util"
 	"os"
@@ -34,7 +35,7 @@ build requirements.`,
 		listAll, _ := cmd.Flags().GetBool("list-all")
 
 		if listAll {
-			util.PrintTasks(os.Stdout, taskDefs.GetTasks())
+			model.PrintTasks(os.Stdout, taskDefs.GetTasks())
 			os.Exit(0)
 		}
 
@@ -45,11 +46,11 @@ build requirements.`,
 			if util.IsEmpty(withDesc) {
 				util.WarnExit("ctor: No tasks with description available. Try --list-all to list all tasks\n")
 			}
-			util.PrintTasks(os.Stdout, withDesc)
+			model.PrintTasks(os.Stdout, withDesc)
 			os.Exit(0)
 		}
 
-		eng := engine.NewEngine(executor.NewExecutor(), taskDefs)
+		eng := engine.NewEngine(executor.NewExecutor(taskDefs), taskDefs)
 
 		return eng.Start(args)
 	},
