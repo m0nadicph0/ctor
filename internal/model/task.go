@@ -8,9 +8,10 @@ import (
 )
 
 type Task struct {
-	Name        string   `yaml:"-"`
-	Commands    []string `yaml:"cmds"`
-	Description string   `yaml:"desc"`
+	Name        string            `yaml:"-"`
+	Commands    []string          `yaml:"cmds"`
+	Description string            `yaml:"desc"`
+	Variables   map[string]string `yaml:"vars"`
 }
 
 func (t *Task) GetExpandedCommands(variables map[string]string) ([]string, error) {

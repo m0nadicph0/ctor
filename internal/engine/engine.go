@@ -25,8 +25,8 @@ func (e Engine) Start(args []string) error {
 		if !ok {
 			util.ErrExitF(1, "task \"%s\" not found\n", arg)
 		}
-
-		expandedCmd, err := task.GetExpandedCommands(e.taskDefs.Variables)
+		mergedVars := util.MergeVars(e.taskDefs.Variables, task.Variables)
+		expandedCmd, err := task.GetExpandedCommands(mergedVars)
 
 		if err != nil {
 			return err
