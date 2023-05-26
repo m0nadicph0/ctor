@@ -21,7 +21,8 @@ func (e Engine) Start(args []string) error {
 	}
 
 	for _, arg := range args {
-		task, ok := e.taskDefs.Find(arg)
+		task, ok := e.findTask(arg)
+
 		if !ok {
 			util.ErrExitF(1, "task \"%s\" not found\n", arg)
 		}
@@ -33,4 +34,19 @@ func (e Engine) Start(args []string) error {
 		}
 	}
 	return nil
+}
+
+func (e Engine) findTask(name string) (*model.Task, bool) {
+	task, ok := e.taskDefs.Find(name)
+	if ok {
+		return task, true
+	}
+
+	task, ok = e.taskDefs.FindByAlias(name)
+
+	if ok {
+		return task, true
+	}
+
+	return nil, false
 }

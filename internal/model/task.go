@@ -14,6 +14,7 @@ type Task struct {
 	Description  string            `yaml:"desc"`
 	Variables    map[string]string `yaml:"vars"`
 	Dependencies []string          `yaml:"deps"`
+	Aliases      []string          `yaml:"aliases"`
 }
 
 func (t *Task) GetExpandedCommands(variables map[string]string) ([]string, error) {
@@ -36,6 +37,15 @@ func (t *Task) String() string {
 
 func (t Task) HasDependency() bool {
 	return len(t.Dependencies) != 0
+}
+
+func (t *Task) HasAlias(alias string) bool {
+	for _, a := range t.Aliases {
+		if a == alias {
+			return true
+		}
+	}
+	return false
 }
 
 func PrintTasks(out io.Writer, tasks []*Task) {

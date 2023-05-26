@@ -11,6 +11,15 @@ func (td *TaskDefs) Find(name string) (*Task, bool) {
 	return task, ok
 }
 
+func (td *TaskDefs) FindByAlias(alias string) (*Task, bool) {
+	for _, task := range td.GetTasks() {
+		if task.HasAlias(alias) {
+			return task, true
+		}
+	}
+	return nil, false
+}
+
 func (td *TaskDefs) GetTasks() []*Task {
 	tasks := make([]*Task, 0)
 	for _, task := range td.Tasks {
@@ -29,7 +38,7 @@ func (td *TaskDefs) GetTasksWithDesc() []*Task {
 	return tasks
 }
 
-func (td TaskDefs) GetDependencies(task *Task) []*Task {
+func (td *TaskDefs) GetDependencies(task *Task) []*Task {
 	dependencies := make([]*Task, 0)
 	for _, dep := range task.Dependencies {
 		dt, ok := td.Find(dep)
