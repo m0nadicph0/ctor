@@ -6,9 +6,9 @@ import (
 	"github.com/m0nadicph0/ctor/internal/model"
 	"github.com/m0nadicph0/ctor/internal/parser"
 	"github.com/m0nadicph0/ctor/internal/util"
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
+	"strings"
 )
 
 var rootCmd = &cobra.Command{
@@ -20,7 +20,9 @@ and executes the specified tasks. It provides a convenient way to automate
 build processes, manage dependencies between tasks, and perform common 
 build requirements.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+
 		ctorFile, _ := cmd.Flags().GetString("ctorfile")
+		argsSep, _ := cmd.Flags().GetString("args-sep")
 
 		cf, err := os.Open(ctorFile)
 		if err != nil {
@@ -51,8 +53,10 @@ build requirements.`,
 		}
 
 		eng := engine.NewEngine(executor.NewExecutor(taskDefs), taskDefs)
+		core, cliArgs := util.SplitArgs(args, argsSep)
+		taskDefs.Variables["CLI_ARGS"] = strings.Join(cliArgs, " ")
 
-		return eng.Start(args)
+		return eng.Start(core)
 	},
 }
 
@@ -69,5 +73,6 @@ func init() {
 	rootCmd.Flags().BoolP("help", "h", false, "shows usage message")
 	rootCmd.Flags().BoolP("list", "l", false, "lists tasks with description of current Ctorfile")
 	rootCmd.Flags().BoolP("list-all", "a", false, "lists tasks with or without a description")
+	rootCmd.Flags().StringP("args-sep", "S", "__", "cli args separator")
 
 }
