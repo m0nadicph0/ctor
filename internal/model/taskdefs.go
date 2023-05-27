@@ -1,8 +1,13 @@
 package model
 
+import (
+	"fmt"
+	"os/exec"
+)
+
 type TaskDefs struct {
 	Version   string            `yaml:"version"`
-	Variables map[string]string `yaml:"vars"`
+	Variables map[string]any    `yaml:"vars"`
 	EnvVars   map[string]string `yaml:"env"`
 	Tasks     map[string]*Task  `yaml:"tasks"`
 }
@@ -48,4 +53,50 @@ func (td *TaskDefs) GetDependencies(task *Task) []*Task {
 		}
 	}
 	return dependencies
+}
+
+func (td TaskDefs) GetVars() map[string]string {
+	result := make(map[string]string)
+	for key, value := range td.Variables {
+		switch value.(type) {
+		case string:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = fmt.Sprintf("%v", value)
+		case map[any]any:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = shellExpand(value.(map[any]any))
+		default:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = fmt.Sprintf("%d", value)
+		}
+	}
+	return result
+}
+
+func shellExpand(value map[any]any) string {
+	shVal := toStrMap(value)
+	cmd := shVal["sh"]
+
+	return shellExec(cmd)
+}
+
+func toStrMap(dynamic map[any]any) map[string]string {
+	result := make(map[string]string)
+	for key, value := range dynamic {
+		sKey := key.(string)
+		sValue := value.(string)
+		result[sKey] = sValue
+	}
+	return result
+}
+
+func shellExec(cmdStr string) string {
+	cmd := exec.Command("sh", "-c", cmdStr)
+
+	output, err := cmd.Output()
+	if err != nil {
+		return ""
+	}
+
+	return string(output)
 }

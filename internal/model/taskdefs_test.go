@@ -29,9 +29,6 @@ func TestTaskDefs_GetDependencies(t *testing.T) {
 
 	taskDefs := &TaskDefs{
 		Version: "1",
-		Variables: map[string]string{
-			"GREETING": "Hello World",
-		},
 		Tasks: map[string]*Task{
 			"task1": &Task{
 				Name:         "task1",

@@ -116,7 +116,7 @@ version: '1'
 
 vars:
   GREETING: Hello from Taskfile!
-  BUILD_NO: 011
+  BUILD_NO: 100
   TAG: 0a34ff
 
 tasks:
@@ -141,12 +141,13 @@ func TestParseTaskDefsVars(t *testing.T) {
 	expectedVars := []string{"GREETING", "BUILD_NO", "TAG"}
 	expectedVals := map[string]string{
 		"GREETING": "Hello from Taskfile!",
-		"BUILD_NO": "011",
+		"BUILD_NO": "100",
 		"TAG":      "0a34ff",
 	}
 
 	for _, expectedVar := range expectedVars {
-		value, ok := taskDefs.Variables[expectedVar]
+		variables := taskDefs.GetVars()
+		value, ok := variables[expectedVar]
 
 		if !ok {
 			t.Errorf("expected to find variable %s, but got=%t", expectedVar, ok)

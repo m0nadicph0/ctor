@@ -8,8 +8,7 @@ import (
 
 func Test_executor_Exec(t *testing.T) {
 	taskDefs := &model.TaskDefs{
-		Version:   "1",
-		Variables: map[string]string{"GREETING": "Hello World"},
+		Version: "1",
 		Tasks: map[string]*model.Task{
 			"task1": &model.Task{
 				Name:         "task1",
