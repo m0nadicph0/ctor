@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
 type TaskDefs struct {
@@ -65,9 +66,12 @@ func (td TaskDefs) GetVars() map[string]string {
 		case map[any]any:
 			strKey := fmt.Sprintf("%v", key)
 			result[strKey] = shellExpand(value.(map[any]any))
+		case float64:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = fmt.Sprintf("%0.1f", value)
 		default:
 			strKey := fmt.Sprintf("%v", key)
-			result[strKey] = fmt.Sprintf("%d", value)
+			result[strKey] = fmt.Sprintf("%v", value)
 		}
 	}
 	return result
@@ -98,5 +102,5 @@ func shellExec(cmdStr string) string {
 		return ""
 	}
 
-	return string(output)
+	return strings.ReplaceAll(string(output), "\n", "")
 }
