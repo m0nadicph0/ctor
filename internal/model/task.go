@@ -16,6 +16,7 @@ type Task struct {
 	Commands     []string          `yaml:"cmds"`
 	Description  string            `yaml:"desc"`
 	Variables    map[string]string `yaml:"vars"`
+	EnvVars      map[string]string `yaml:"env"`
 	Dependencies []string          `yaml:"deps"`
 	Aliases      []string          `yaml:"aliases"`
 }
@@ -50,13 +51,6 @@ func (t *Task) HasAlias(alias string) bool {
 	}
 	return false
 }
-
-//func PrintTasks(out io.Writer, tasks []*Task) {
-//	fmt.Fprintln(out, "ctor: Available tasks for this project:")
-//	for _, task := range tasks {
-//		fmt.Fprintf(out, "%s %s:\t%s\t%s\n", aurora.Yellow("*"), aurora.Green(task.Name), task.Description, aurora.Cyan(getAliasStr(task)))
-//	}
-//}
 
 func PrintTasks(out io.Writer, tasks []*Task) {
 	fmt.Fprintln(out, "ctor: Available tasks for this project:")

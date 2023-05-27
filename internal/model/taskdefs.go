@@ -3,6 +3,7 @@ package model
 type TaskDefs struct {
 	Version   string            `yaml:"version"`
 	Variables map[string]string `yaml:"vars"`
+	EnvVars   map[string]string `yaml:"env"`
 	Tasks     map[string]*Task  `yaml:"tasks"`
 }
 
