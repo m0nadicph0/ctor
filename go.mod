@@ -1,6 +1,6 @@
 module github.com/m0nadicph0/ctor
 
-go 1.18
+go 1.20
 
 require (
 	github.com/google/uuid v1.3.0 // indirect

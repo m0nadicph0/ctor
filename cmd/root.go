@@ -54,7 +54,7 @@ build requirements.`,
 
 		eng := engine.NewEngine(executor.NewExecutor(taskDefs), taskDefs)
 		core, cliArgs := util.SplitArgs(args, argsSep)
-		taskDefs.Variables["CLI_ARGS"] = strings.Join(cliArgs, " ")
+		taskDefs.AddVar("CLI_ARGS", strings.Join(cliArgs, " "))
 
 		return eng.Start(core)
 	},

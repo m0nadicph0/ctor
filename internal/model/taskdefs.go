@@ -2,8 +2,6 @@ package model
 
 import (
 	"fmt"
-	"os/exec"
-	"strings"
 )
 
 type TaskDefs struct {
@@ -56,7 +54,7 @@ func (td *TaskDefs) GetDependencies(task *Task) []*Task {
 	return dependencies
 }
 
-func (td TaskDefs) GetVars() map[string]string {
+func (td *TaskDefs) GetVars() map[string]string {
 	result := make(map[string]string)
 	for key, value := range td.Variables {
 		switch value.(type) {
@@ -77,30 +75,9 @@ func (td TaskDefs) GetVars() map[string]string {
 	return result
 }
 
-func shellExpand(value map[any]any) string {
-	shVal := toStrMap(value)
-	cmd := shVal["sh"]
-
-	return shellExec(cmd)
-}
-
-func toStrMap(dynamic map[any]any) map[string]string {
-	result := make(map[string]string)
-	for key, value := range dynamic {
-		sKey := key.(string)
-		sValue := value.(string)
-		result[sKey] = sValue
+func (td *TaskDefs) AddVar(key string, value string) {
+	if td.Variables == nil {
+		td.Variables = make(map[string]any)
 	}
-	return result
-}
-
-func shellExec(cmdStr string) string {
-	cmd := exec.Command("sh", "-c", cmdStr)
-
-	output, err := cmd.Output()
-	if err != nil {
-		return ""
-	}
-
-	return strings.ReplaceAll(string(output), "\n", "")
+	td.Variables[key] = value
 }

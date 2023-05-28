@@ -15,7 +15,7 @@ type Task struct {
 	Name         string            `yaml:"-"`
 	Commands     []string          `yaml:"cmds"`
 	Description  string            `yaml:"desc"`
-	Variables    map[string]string `yaml:"vars"`
+	Variables    map[string]any    `yaml:"vars"`
 	EnvVars      map[string]string `yaml:"env"`
 	Dependencies []string          `yaml:"deps"`
 	Aliases      []string          `yaml:"aliases"`
@@ -50,6 +50,27 @@ func (t *Task) HasAlias(alias string) bool {
 		}
 	}
 	return false
+}
+
+func (t *Task) GetVars() map[string]string {
+	result := make(map[string]string)
+	for key, value := range t.Variables {
+		switch value.(type) {
+		case string:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = fmt.Sprintf("%v", value)
+		case map[any]any:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = shellExpand(value.(map[any]any))
+		case float64:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = fmt.Sprintf("%0.1f", value)
+		default:
+			strKey := fmt.Sprintf("%v", key)
+			result[strKey] = fmt.Sprintf("%v", value)
+		}
+	}
+	return result
 }
 
 func PrintTasks(out io.Writer, tasks []*Task) {

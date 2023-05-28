@@ -49,7 +49,7 @@ func (e *executor) Exec(task *model.Task) error {
 }
 
 func (e *executor) executeTask(task *model.Task) error {
-	mergedVars := util.MergeVars(e.TaskDefs.GetVars(), task.Variables)
+	mergedVars := util.MergeVars(e.TaskDefs.GetVars(), task.GetVars())
 	expandedCmd, err := task.GetExpandedCommands(mergedVars)
 
 	if err != nil {
