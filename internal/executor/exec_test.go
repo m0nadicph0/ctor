@@ -11,22 +11,40 @@ func Test_executor_Exec(t *testing.T) {
 		Version: "1",
 		Tasks: map[string]*model.Task{
 			"task1": &model.Task{
-				Name:         "task1",
-				Commands:     []string{"echo task1"},
+				Name: "task1",
+				Commands: []*model.Command{
+					{
+						Cmd:    "echo task1",
+						Task:   "",
+						IsTask: false,
+					},
+				},
 				Description:  "sample task",
 				Variables:    make(map[string]any),
 				Dependencies: []string{},
 			},
 			"task2": &model.Task{
-				Name:         "task2",
-				Commands:     []string{"echo task2"},
+				Name: "task2",
+				Commands: []*model.Command{
+					{
+						Cmd:    "echo task2",
+						Task:   "",
+						IsTask: false,
+					},
+				},
 				Description:  "sample task",
 				Variables:    make(map[string]any),
 				Dependencies: []string{"task1"},
 			},
 			"task3": &model.Task{
-				Name:         "task3",
-				Commands:     []string{"echo task3"},
+				Name: "task3",
+				Commands: []*model.Command{
+					{
+						Cmd:    "echo task3",
+						Task:   "",
+						IsTask: false,
+					},
+				},
 				Description:  "sample task",
 				Variables:    make(map[string]any),
 				Dependencies: []string{"task2"},

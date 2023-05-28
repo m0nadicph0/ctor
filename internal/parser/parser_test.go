@@ -61,12 +61,24 @@ func TestParseTaskDefs(t *testing.T) {
 			count:   2,
 			tasks: []*model.Task{
 				{
-					Name:     "build",
-					Commands: []string{"go build"},
+					Name: "build",
+					Commands: []*model.Command{
+						{
+							Cmd:    "go build",
+							Task:   "",
+							IsTask: false,
+						},
+					},
 				},
 				{
-					Name:     "test",
-					Commands: []string{"go test -v ./..."},
+					Name: "test",
+					Commands: []*model.Command{
+						{
+							Cmd:    "go test -v ./...",
+							Task:   "",
+							IsTask: false,
+						},
+					},
 				},
 			},
 			wantErr: false,
@@ -77,16 +89,34 @@ func TestParseTaskDefs(t *testing.T) {
 			count:   3,
 			tasks: []*model.Task{
 				{
-					Name:     "default",
-					Commands: []string{"go build"},
+					Name: "default",
+					Commands: []*model.Command{
+						{
+							Cmd:    "go build",
+							Task:   "",
+							IsTask: false,
+						},
+					},
 				},
 				{
-					Name:     "test",
-					Commands: []string{"go test -v ./..."},
+					Name: "test",
+					Commands: []*model.Command{
+						{
+							Cmd:    "go test -v ./...",
+							Task:   "",
+							IsTask: false,
+						},
+					},
 				},
 				{
-					Name:     "clean",
-					Commands: []string{"go clean"},
+					Name: "clean",
+					Commands: []*model.Command{
+						{
+							Cmd:    "go clean",
+							Task:   "",
+							IsTask: false,
+						},
+					},
 				},
 			},
 			wantErr: false,

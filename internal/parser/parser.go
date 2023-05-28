@@ -2,13 +2,12 @@ package parser
 
 import (
 	"github.com/m0nadicph0/ctor/internal/model"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"io"
-	"io/ioutil"
 )
 
 func ParseTaskDefs(r io.Reader) (*model.TaskDefs, error) {
-	data, err := ioutil.ReadAll(r)
+	data, err := io.ReadAll(r)
 
 	if err != nil {
 		return nil, err

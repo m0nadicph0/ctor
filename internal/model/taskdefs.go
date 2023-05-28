@@ -61,9 +61,9 @@ func (td *TaskDefs) GetVars() map[string]string {
 		case string:
 			strKey := fmt.Sprintf("%v", key)
 			result[strKey] = fmt.Sprintf("%v", value)
-		case map[any]any:
+		case map[string]any:
 			strKey := fmt.Sprintf("%v", key)
-			result[strKey] = shellExpand(value.(map[any]any))
+			result[strKey] = shellExpand(value.(map[string]any))
 		case float64:
 			strKey := fmt.Sprintf("%v", key)
 			result[strKey] = fmt.Sprintf("%0.1f", value)

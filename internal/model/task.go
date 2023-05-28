@@ -6,14 +6,14 @@ import (
 	"github.com/logrusorgru/aurora/v4"
 	"github.com/m0nadicph0/ctor/internal/builtins"
 	"github.com/olekukonko/tablewriter"
-	"html/template"
 	"io"
 	"strings"
+	"text/template"
 )
 
 type Task struct {
 	Name         string            `yaml:"-"`
-	Commands     []string          `yaml:"cmds"`
+	Commands     []*Command        `yaml:"cmds"`
 	Description  string            `yaml:"desc"`
 	Variables    map[string]any    `yaml:"vars"`
 	EnvVars      map[string]string `yaml:"env"`
@@ -21,16 +21,29 @@ type Task struct {
 	Aliases      []string          `yaml:"aliases"`
 }
 
-func (t *Task) GetExpandedCommands(variables map[string]string) ([]string, error) {
-	expandedCommands := make([]string, 0)
+func (t *Task) GetExpandedCommands(variables map[string]string) ([]*Command, error) {
+	expandedCommands := make([]*Command, 0)
 	for _, command := range t.Commands {
-		tmpl, err := template.New("").Funcs(template.FuncMap(builtins.BuiltinFunctions)).Parse(command)
-		if err != nil {
-			return []string{}, fmt.Errorf("failed to parse command [%s]:%v", command, err)
+		if command.IsTask {
+			expandedCommands = append(expandedCommands, &Command{
+				Cmd:    "",
+				Task:   command.Task,
+				IsTask: true,
+			})
+		} else {
+			tmpl, err := template.New("").Funcs(template.FuncMap(builtins.BuiltinFunctions)).Parse(command.Cmd)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse command [%s]:%v", command, err)
+			}
+			var buf bytes.Buffer
+			_ = tmpl.Execute(&buf, variables)
+			expandedCommands = append(expandedCommands, &Command{
+				Cmd:    buf.String(),
+				Task:   "",
+				IsTask: false,
+			})
 		}
-		var buf bytes.Buffer
-		_ = tmpl.Execute(&buf, variables)
-		expandedCommands = append(expandedCommands, buf.String())
+
 	}
 	return expandedCommands, nil
 }
@@ -39,7 +52,7 @@ func (t *Task) String() string {
 	return fmt.Sprintf("- %s:\t %s", t.Name, t.Description)
 }
 
-func (t Task) HasDependency() bool {
+func (t *Task) HasDependency() bool {
 	return len(t.Dependencies) != 0
 }
 
@@ -59,9 +72,9 @@ func (t *Task) GetVars() map[string]string {
 		case string:
 			strKey := fmt.Sprintf("%v", key)
 			result[strKey] = fmt.Sprintf("%v", value)
-		case map[any]any:
+		case map[string]any:
 			strKey := fmt.Sprintf("%v", key)
-			result[strKey] = shellExpand(value.(map[any]any))
+			result[strKey] = shellExpand(value.(map[string]any))
 		case float64:
 			strKey := fmt.Sprintf("%v", key)
 			result[strKey] = fmt.Sprintf("%0.1f", value)

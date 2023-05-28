@@ -59,10 +59,21 @@ func (e *executor) executeTask(task *model.Task) error {
 	mergedEnv := util.MergeVars(e.TaskDefs.EnvVars, task.EnvVars)
 
 	for _, cmd := range expandedCmd {
-		err := e.execCmd(cmd, util.EnvList(mergedEnv))
-		if err != nil {
-			return err
+		if cmd.IsTask {
+			cmdTask, ok := e.TaskDefs.Find(cmd.Task)
+			if ok {
+				err := e.executeTask(cmdTask)
+				if err != nil {
+					return err
+				}
+			}
+		} else {
+			err := e.execCmd(cmd.Cmd, util.EnvList(mergedEnv))
+			if err != nil {
+				return err
+			}
 		}
+
 	}
 	return nil
 }

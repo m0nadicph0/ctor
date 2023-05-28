@@ -30,23 +30,41 @@ func TestTaskDefs_GetDependencies(t *testing.T) {
 	taskDefs := &TaskDefs{
 		Version: "1",
 		Tasks: map[string]*Task{
-			"task1": &Task{
-				Name:         "task1",
-				Commands:     []string{"echo task1"},
+			"task1": {
+				Name: "task1",
+				Commands: []*Command{
+					{
+						Cmd:    "echo task1",
+						Task:   "",
+						IsTask: false,
+					},
+				},
 				Description:  "sample task",
 				Variables:    map[string]any{},
 				Dependencies: []string{},
 			},
-			"task2": &Task{
-				Name:         "task2",
-				Commands:     []string{"echo task2"},
+			"task2": {
+				Name: "task2",
+				Commands: []*Command{
+					{
+						Cmd:    "echo task2",
+						Task:   "",
+						IsTask: false,
+					},
+				},
 				Description:  "sample task",
 				Variables:    map[string]any{},
 				Dependencies: []string{},
 			},
-			"task3": &Task{
-				Name:         "task3",
-				Commands:     []string{"echo task3"},
+			"task3": {
+				Name: "task3",
+				Commands: []*Command{
+					{
+						Cmd:    "echo task3",
+						Task:   "",
+						IsTask: false,
+					},
+				},
 				Description:  "sample task",
 				Variables:    map[string]any{},
 				Dependencies: []string{"task1", "task2"},
