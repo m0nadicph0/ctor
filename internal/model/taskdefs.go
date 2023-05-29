@@ -6,8 +6,8 @@ import (
 
 type TaskDefs struct {
 	Version   string            `yaml:"version"`
-	Variables map[string]any    `yaml:"vars"`
-	EnvVars   map[string]string `yaml:"env"`
+	Variables map[string]any    `yaml:"vars,omitempty"`
+	EnvVars   map[string]string `yaml:"env,omitempty"`
 	Tasks     map[string]*Task  `yaml:"tasks"`
 }
 
@@ -80,4 +80,8 @@ func (td *TaskDefs) AddVar(key string, value string) {
 		td.Variables = make(map[string]any)
 	}
 	td.Variables[key] = value
+}
+
+func (td *TaskDefs) AddTask(task *Task) {
+	td.Tasks[task.Name] = task
 }

@@ -11,6 +11,16 @@ type Command struct {
 	IsTask bool
 }
 
+func (c *Command) MarshalYAML() (interface{}, error) {
+	if c.IsTask {
+		yamlMap := make(map[string]interface{})
+		yamlMap["task"] = c.Task
+		return yamlMap, nil
+	} else {
+		return c.Cmd, nil
+	}
+}
+
 func (c *Command) String() string {
 	if c.IsTask {
 		return fmt.Sprintf("task: %s", c.Task)

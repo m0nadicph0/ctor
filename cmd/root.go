@@ -6,6 +6,7 @@ import (
 	"github.com/m0nadicph0/ctor/internal/executor"
 	"github.com/m0nadicph0/ctor/internal/model"
 	"github.com/m0nadicph0/ctor/internal/parser"
+	"github.com/m0nadicph0/ctor/internal/shell"
 	"github.com/m0nadicph0/ctor/internal/util"
 	"github.com/m0nadicph0/ctor/version"
 	"github.com/spf13/cobra"
@@ -31,6 +32,17 @@ build requirements.`,
 
 		ctorFile, _ := cmd.Flags().GetString("ctorfile")
 		argsSep, _ := cmd.Flags().GetString("args-sep")
+
+		isInteractive, _ := cmd.Flags().GetBool("interactive")
+
+		if isInteractive {
+			sh := shell.NewShell(ctorFile)
+			err := sh.Start()
+			if err != nil {
+				util.ErrExitF(1, "failed to start interactive shell: %v\n", err)
+			}
+			os.Exit(0)
+		}
 
 		cf, err := os.Open(ctorFile)
 		if err != nil {
@@ -83,5 +95,6 @@ func init() {
 	rootCmd.Flags().BoolP("list-all", "a", false, "Lists tasks with or without a description")
 	rootCmd.Flags().StringP("args-sep", "S", "__", "CLI args separator")
 	rootCmd.Flags().Bool("version", false, "Show version")
+	rootCmd.Flags().BoolP("interactive", "I", false, "Starts a interactive shell")
 
 }

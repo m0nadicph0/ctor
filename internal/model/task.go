@@ -13,12 +13,12 @@ import (
 
 type Task struct {
 	Name         string            `yaml:"-"`
-	Commands     []*Command        `yaml:"cmds"`
-	Description  string            `yaml:"desc"`
-	Variables    map[string]any    `yaml:"vars"`
-	EnvVars      map[string]string `yaml:"env"`
-	Dependencies []string          `yaml:"deps"`
-	Aliases      []string          `yaml:"aliases"`
+	Commands     []*Command        `yaml:"cmds,omitempty"`
+	Description  string            `yaml:"desc,omitempty"`
+	Variables    map[string]any    `yaml:"vars,omitempty"`
+	EnvVars      map[string]string `yaml:"env,omitempty"`
+	Dependencies []string          `yaml:"deps,omitempty"`
+	Aliases      []string          `yaml:"aliases,omitempty"`
 }
 
 func (t *Task) GetExpandedCommands(variables map[string]string) ([]*Command, error) {
