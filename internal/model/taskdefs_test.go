@@ -4,27 +4,6 @@ import (
 	"testing"
 )
 
-const TestYaml = `
-version: '1'
-
-tasks:
-  task1:
-    cmds:
-      - echo task1
-
-  task2:
-    cmds:
-      - echo task2
-  task3:
-    deps: [task1, task2]
-    cmds:
-      - echo task3
-  task4:
-	deps: [task3]
-    cmds:
-      - echo task2
-`
-
 func TestTaskDefs_GetDependencies(t *testing.T) {
 
 	taskDefs := &TaskDefs{

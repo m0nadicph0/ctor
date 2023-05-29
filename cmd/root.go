@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"fmt"
 	engine "github.com/m0nadicph0/ctor/internal/engine"
 	"github.com/m0nadicph0/ctor/internal/executor"
 	"github.com/m0nadicph0/ctor/internal/model"
 	"github.com/m0nadicph0/ctor/internal/parser"
 	"github.com/m0nadicph0/ctor/internal/util"
+	"github.com/m0nadicph0/ctor/version"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -20,6 +22,12 @@ and executes the specified tasks. It provides a convenient way to automate
 build processes, manage dependencies between tasks, and perform common 
 build requirements.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		showVersion, _ := cmd.Flags().GetBool("version")
+
+		if showVersion {
+			fmt.Fprintln(os.Stdout, "Ctor version:", version.GetVersion())
+			os.Exit(0)
+		}
 
 		ctorFile, _ := cmd.Flags().GetString("ctorfile")
 		argsSep, _ := cmd.Flags().GetString("args-sep")
@@ -68,11 +76,12 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringP("ctorfile", "c", "Ctorfile.yaml", "choose which Ctorfile to run")
-	rootCmd.Flags().BoolP("verbose", "v", false, "enables verbose mode")
-	rootCmd.Flags().BoolP("help", "h", false, "shows usage message")
-	rootCmd.Flags().BoolP("list", "l", false, "lists tasks with description of current Ctorfile")
-	rootCmd.Flags().BoolP("list-all", "a", false, "lists tasks with or without a description")
-	rootCmd.Flags().StringP("args-sep", "S", "__", "cli args separator")
+	rootCmd.Flags().StringP("ctorfile", "c", "Ctorfile.yaml", "Choose which Ctorfile to run")
+	rootCmd.Flags().BoolP("verbose", "v", false, "Enables verbose mode")
+	rootCmd.Flags().BoolP("help", "h", false, "Shows usage message")
+	rootCmd.Flags().BoolP("list", "l", false, "Lists tasks with description of current Ctorfile")
+	rootCmd.Flags().BoolP("list-all", "a", false, "Lists tasks with or without a description")
+	rootCmd.Flags().StringP("args-sep", "S", "__", "CLI args separator")
+	rootCmd.Flags().Bool("version", false, "Show version")
 
 }
